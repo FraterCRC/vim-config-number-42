@@ -18,7 +18,6 @@ Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
 
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
-
 call plug#end()
 lua << EOF
   vim.g.coq_settings = {
@@ -38,33 +37,14 @@ lua << EOF
     },
   }
 require("mason").setup()
-require("mason-lspconfig").setup {
-    ensure_installed = { "pylsp" },
-}
+require("mason-lspconfig").setup({
+  ensure_installed = { "pyright" },
+  automatic_installation = true 
+})
+require'lspconfig'.pyright.setup{}
 
 -- Automatically install LSP servers
-local lspconfig = require('lspconfig')
 
-require("mason-lspconfig").setup_handlers {
-    function (server_name) -- default handler (optional)
-        lspconfig[server_name].setup(coq.lsp_ensure_capabilities({}))
-    end,
-    ["pylsp"] = function ()
-        lspconfig.pylsp.setup {
-            settings = {
-                pylsp = {
-                    plugins = {
-                        pycodestyle = {
-                            enabled = true,
-                            ignore = {},
-                            maxLineLength = 120
-                        }
-                    }
-                }
-            }
-        }
-    end,
-}
 EOF
 
 nnoremap <silent> <leader>bc :BCreate<CR>
